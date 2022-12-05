@@ -1,5 +1,6 @@
 %en_mt_tws = ensemble_model_TWS
 %gr_tws=GRACE_TWS
+%observation_error = GRACE_error
 
 prior_mean=mean(en_mt_tws,3);
 prior_var=var(en_mt_tws,0,3);
@@ -17,13 +18,9 @@ var_ratio=post_var./prior_var;
 updated_ensemble=sqrt(var_ratio).*(updated_ensemble-post_mean)+post_mean;
 
 %distribute the increment to each ensemble
-for aa=1:40
-    ensemble_por_incre=updated_ensemble(:,:,aa)./en_mt_tws(:,:,aa);
-    ensemble_por_incre(isnan(ensemble_por_incre))=1;
-    ensemble_por_incre(ensemble_por_incre<0)=1;
-    
-    %updating components of TWS
-    
+for aa=40
+    ensemble_por_incre=portion of model TWS and GRACE TWS
+    %updating components of TWS with reading component
     a1=ncread(nn_r(end).name,'');
     a2=ncread(nn_r(end).name,'');
     a3=ncread(nn_r(end).name,'');
@@ -31,10 +28,14 @@ for aa=1:40
     a5=ncread(nn_r(end).name,'');
     a6=ncread(nn_r(end).name,'');
     
-    a1=a1.*increment';
-    a2=a2.*increment';
-    a3=a3.*increment';
-    a4=a4.*increment';
+    %change 1d to 2d
+    
+    a1=a1.*ensemble_por_incre';
+    a2=a2.*ensemble_por_incre';
+    a3=a3.*ensemble_por_incre';
+    a4=a4.*ensemble_por_incre';
+    a5=a5.*ensemble_por_incre';
+    a6=a6.*ensemble_por_incre';
       
     sprintf("end of calculation %s increment",fname)
 
