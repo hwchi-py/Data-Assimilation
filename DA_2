@@ -1,0 +1,37 @@
+@ a = 13
+while ($a <= 13)  #1 year=13, 8 year=97
+sleep 1s
+
+@ en = 1
+while ($en <= 40) 
+
+set fname=eda_$en
+
+#############change model option#############
+#############################################
+
+sleep 1s
+
+qsub .case.run
+
+sleep 2s
+
+set dd= number of restart file
+
+while ($dd < $a) 
+    set dd=number of restart file
+    echo "$dd"
+end
+if ($dd == $a) then
+    set dd=number of restart file
+    echo "$dd"
+endif
+
+sleep 10s
+
+sleep 10s
+
+@ en ++
+end
+@ a ++
+end
