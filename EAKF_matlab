@@ -1,0 +1,49 @@
+%en_mt_tws = ensemble_model_TWS
+%gr_tws=GRACE_TWS
+
+prior_mean=mean(en_mt_tws,3);
+prior_var=var(en_mt_tws,0,3);
+
+%posterior varianve
+post_var=1./(1./prior_var+1./observation_error);
+%posterior mean
+post_mean=post_var.*((prior_mean./prior_var)+(gr_tws./observation_error));
+
+%updated_ensemble
+updated_ensemble=en_mt_tws-prior_mean+post_mean;
+
+%updated ensemble
+var_ratio=post_var./prior_var;
+updated_ensemble=sqrt(var_ratio).*(updated_ensemble-post_mean)+post_mean;
+
+%distribute the increment to each ensemble
+for aa=1:40
+    ensemble_por_incre=updated_ensemble(:,:,aa)./en_mt_tws(:,:,aa);
+    ensemble_por_incre(isnan(ensemble_por_incre))=1;
+    ensemble_por_incre(ensemble_por_incre<0)=1;
+    
+    %updating components of TWS
+    
+    a1=ncread(nn_r(end).name,'');
+    a2=ncread(nn_r(end).name,'');
+    a3=ncread(nn_r(end).name,'');
+    a4=ncread(nn_r(end).name,'');
+    a5=ncread(nn_r(end).name,'');
+    a6=ncread(nn_r(end).name,'');
+    
+    a1=a1.*increment';
+    a2=a2.*increment';
+    a3=a3.*increment';
+    a4=a4.*increment';
+      
+    sprintf("end of calculation %s increment",fname)
+
+    ncwrite(nn_r(end).name,'',a1);
+    ncwrite(nn_r(end).name,'',a2);
+    ncwrite(nn_r(end).name,'',a3);
+    ncwrite(nn_r(end).name,'',a4);
+    ncwrite(nn_r(end).name,'',a5);
+    ncwrite(nn_r(end).name,'',a6);
+    
+    sprintf("end of updating %s restart file",fname)
+end
